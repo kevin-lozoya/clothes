@@ -3,10 +3,10 @@ namespace App\Controllers;
 
 use App\Template;
 
-class Main extends Template {
+class MainController extends Template {
   
   public function getIndex() {
-    return $this->render('main/index.twig', []);
+    return $this->render('main/index.twig');
   }
 }
 ?>

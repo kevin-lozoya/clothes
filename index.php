@@ -29,7 +29,10 @@ $capsule->addConnection([
 	'prefix'    => '',
 ]);
 
+// Make this Capsule instance available globally via static methods
 $capsule->setAsGlobal();
+
+// Setup the Eloquent ORM
 $capsule->bootEloquent();
 
 $route = $_GET['route'] ?? '/';
@@ -38,7 +41,8 @@ use Phroute\Phroute\RouteCollector;
 
 $router = new RouteCollector();
 
-$router->controller('/', App\Controllers\Main::class);
+$router->controller('/', \App\Controllers\MainController::class);
+$router->controller('/auth', \App\Controllers\AuthController::class);
 
 $dispatcher = new Phroute\Phroute\Dispatcher($router->getData());
 

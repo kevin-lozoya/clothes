@@ -1,1 +1,6 @@
 {% extends 'layout.twig' %}
+{% block content %}
+  {% if user %}
+    {{user.username}}
+  {% endif %}
+{% endblock %}

@@ -6,14 +6,53 @@
   <!--Import Google Icon Font-->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!--Import materialize.css-->
-  <link type="text/css" rel="stylesheet" href="static/css/materialize.min.css" media="screen,projection" />
-
+  <link type="text/css" rel="stylesheet" href="{{'static/css/materialize.min.css' | url}}" media="screen,projection" />
+  <!-- Application's theme -->
+  <link rel="stylesheet" href="{{'static/css/style.css' | url}}">
   <!--Let browser know website is optimized for mobile-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
+  <nav>
+    <div class="container nav-wrapper">
+      <a href="{{'' | url}}" class="brand-logo">Clothes</a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+      {% if user %}
+        <li>
+          <a href="{{'auth/logout' | url}}">Logout</a>
+        </li>
+      {% else %}
+        <li>
+          <a href="{{'auth/login' | url}}">Login</a>
+        </li>
+        <li>
+          <a href="{{'auth/signup' | url}}">Sign up</a>
+        </li>
+      {% endif %}
+      </ul>
+    </div>
+  </nav>
+  <ul class="sidenav" id="mobile-demo">
+    {% if user %}
+      <li>
+        <a href="{{'auth/logout' | url}}">Logout</a>
+      </li>
+    {% else %}
+      <li>
+        <a href="{{'auth/login' | url}}">Login</a>
+      </li>
+      <li>
+        <a href="{{'auth/signup' | url}}">Sign up</a>
+      </li>
+    {% endif %}
+  </ul>
+
+  {{ block('content') }}
 
   <!--JavaScript at end of body for optimized loading-->
-  <script type="text/javascript" src="static/js/materialize.min.js"></script>
+  <script type="text/javascript" src="{{'static/js/materialize.min.js' | url}}"></script>
+  <script type="text/javascript" src="{{'static/js/app.js' | url}}"></script>
+  {% block script %}{% endblock %}
 </body>
 </html>

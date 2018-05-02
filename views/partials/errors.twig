@@ -1,0 +1,9 @@
+<div class="red-text">
+  <ul class="browser-default">
+    {% for input, messages in errors %}
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+</div>

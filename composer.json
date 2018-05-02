@@ -20,6 +20,7 @@
     "phroute/phroute": "^2.1",
     "monolog/monolog": "^1.23",
     "illuminate/database": "^5.6",
-    "siriusphp/validation": "^2.2"
+    "siriusphp/validation": "^2.2",
+    "phpmailer/phpmailer": "^6.0"
   }
 }

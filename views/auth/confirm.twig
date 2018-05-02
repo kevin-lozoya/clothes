@@ -1,0 +1,23 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+<div class="section container">
+  <div class="row">
+    <div class="col s12 m6 offset-m3">
+      <div class="card login-wrapper">
+        <div class="card-content">
+
+          <div id="AccountVerification">
+            <h4 class="center-align">Registered successfully</h4>
+            <p>Your account has been successfully registered. You can
+              <a href="{{ 'auth/login' | url }}">login</a>.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
