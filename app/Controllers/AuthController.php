@@ -2,9 +2,10 @@
 namespace App\Controllers;
 
 use App\Template;
-use App\Models\User;
 use App\Modules\Log;
 use App\Modules\Mailer;
+use App\Models\AuthUser;
+use App\Models\AuthMembership;
 use Sirius\Validation\Validator;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -22,14 +23,22 @@ class AuthController extends Template {
     $validator->add('password:Password', 'required');
 
     if ($validator->validate($_POST)) {
-      $user = User::where('email', $_POST['email'])->where('registration', 0)->first();
+      $user = AuthUser::where('email', $_POST['email'])
+                      ->where('registration_key', '')
+                      ->first();
       if ($user) {
         if (password_verify($_POST['password'], $user->password)) {
           // OK
+          $memberships = [];
+          foreach (AuthMembership::where('user_id', $user->id)->cursor() as $membership) {
+            $memberships[] = $membership->group_id;
+          }
+
           $_SESSION['user'] = [
             'id' => $user->id,
             'username' => $user->username,
-            'email' => $user->email
+            'email' => $user->email,
+            'memberships' => $memberships
           ];
           Log::logInfo('Login success: '.$user->id);
           header('Location: '.BASE_URL);
@@ -63,12 +72,11 @@ class AuthController extends Template {
         $statusRegistration = true;
         Capsule::beginTransaction();
         try {
-          $user = User::create([
+          $user = AuthUser::create([
             'username' => $_POST['username'],
             'email' => $_POST['email'],
             'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
-            'token' => $token,
-            'registration' => 1
+            'registration_key' => $token
           ]);
         } catch(QueryException $e) {
           $statusRegistration = false;
@@ -103,16 +111,14 @@ class AuthController extends Template {
   }
 
   public function getConfirm(string $token, string $email) {
-    $user = User::where('token', $token)
-                ->where('email', $email)
-                ->where('registration', 1)
+    $user = AuthUser::where('email', $email)
+                ->where('registration_key', $token)
                 ->first();
     if ($user) {
       try {
-        User::where('id', $user->id)
+        AuthUser::where('id', $user->id)
             ->update([
-              'registration' => 0,
-              'token' => ''
+              'registration_key' => ''
             ]);
         return $this->render('auth/confirm.twig');
       }
@@ -125,9 +131,7 @@ class AuthController extends Template {
   }
 
   public function getResetpassword(string $token) {
-    $user = User::where('token', $token)
-                ->where('reset_password', 1)
-                ->first();
+    $user = AuthUser::where('reset_password_key', $token)->first();
     if ($user) {
       return $this->render('auth/resetpassword.twig', [
         'token' => $token
@@ -147,15 +151,12 @@ class AuthController extends Template {
     if ($validator->validate($_POST)) {
       $resetsuccess = false;
       if ($_POST['p'] == $_POST['cp']) {
-        $user = User::where('token', $_POST['t'])
-                    ->where('reset_password', 1)
-                    ->first();
+        $user = AuthUser::where('reset_password_key', $_POST['t'])->first();
         if ($user) {
           try {
-            User::where('id', $user->id)->update([
+            AuthUser::where('id', $user->id)->update([
               'password' => password_hash($_POST['p'], PASSWORD_DEFAULT),
-              'reset_password' => 0,
-              'token' => ''
+              'reset_password_key' => ''
             ]);
             $resetsuccess = true;
           } catch (QueryException $e) {
@@ -188,14 +189,13 @@ class AuthController extends Template {
     $validator->add('RecoverPasswordForm', 'required');
     $validator->add('email', 'required');
     if ($validator->validate($_POST)) {
-      $user = User::where('email', $_POST['email'])->first();
+      $user = AuthUser::where('email', $_POST['email'])->first();
       if ($user) {
         $token = md5(uniqid(rand(), true));
         Capsule::beginTransaction();
         try {
-          User::where('id', $user->id)->update([
-            'token' => $token,
-            'reset_password' => 1
+          AuthUser::where('id', $user->id)->update([
+            'reset_password_key' => $token
           ]);
         } catch(QueryException $e) {
           Log::logError($e->getMessage());

@@ -1,61 +1,57 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-<div class="section container">
-  <div class="row">
-    <div class="col s12 m6 offset-m3">
-      <div class="card login-wrapper">
-        <div class="card-content">
-        
-          <div id="LoginForm">
-            <form method="post" action="{{'auth/login' | url}}" id="authLoginForm">
-              <h4 class="center">Login</h4>
-              <div class="input-field">
-                <label for="CustomerEmail" class="">
-                  Email
-                </label>
-                <input name="email" id="CustomerEmail" class="" spellcheck="false" autocomplete="off" autocapitalize="off" autofocus="" type="email">
-              </div>
-              <div class="input-field">
-                <label for="CustomerPassword">
-                  Password
-                </label>
-                <input name="password" id="CustomerPassword" class="" type="password">
-              </div>
-              {% if errors %}
-                {% include 'partials/errors.twig' %}
-              {% endif %}
-              <input class="btn-large" type="submit" value="Login">
-              <a href="#recover" id="RecoverPassword">Forgot your password?</a>
-            </form>
-          </div>
-
-          <div id="RecoverPasswordForm" class="hide">
-            <h4 class="center">Reset your password</h4>
-            <p>Don't worry, it happens to everyone!</p>
-            <p>Just let us know what email you use to sign in and we'll send you some instructions on how to reset your password.</p>
-            <form method="post" action="{{'auth/recover' | url}}">
-              <input type="hidden" name="RecoverPasswordForm" value="ok">
-              <div class="input-field">
-                <label for="RecoverEmail">
-                  Email
-                </label>
-                <input name="email" id="RecoverEmail" spellcheck="false" autocomplete="off" autocapitalize="off" type="email">
-              </div>
-              <input class="btn-large" type="submit" value="Send">
-              <a href="#" id="HideRecoverPasswordLink">
-                Cancel
-              </a>
-            </form>
-          </div>
-
+<div class="row">
+  <div class="col s12 m6 offset-m3">
+    <div class="card login-wrapper">
+      <div class="card-content">
+      
+        <div id="LoginForm">
+          <form method="post" action="{{'auth/login' | url}}" id="authLoginForm">
+            <h4 class="center">Login</h4>
+            <div class="input-field">
+              <label for="CustomerEmail" class="">
+                Email
+              </label>
+              <input name="email" id="CustomerEmail" class="" spellcheck="false" autocomplete="off" autocapitalize="off" autofocus="" type="email">
+            </div>
+            <div class="input-field">
+              <label for="CustomerPassword">
+                Password
+              </label>
+              <input name="password" id="CustomerPassword" class="" type="password">
+            </div>
+            {% if errors %}
+              {% include 'partials/errors.twig' %}
+            {% endif %}
+            <input class="btn-large" type="submit" value="Login">
+            <a href="#recover" id="RecoverPassword">Forgot your password?</a>
+          </form>
         </div>
-      </div>
 
+        <div id="RecoverPasswordForm" class="hide">
+          <h3 class="center-align">Reset your password</h3>
+          <h5 class="center-align">Please enter your email and we will send you instructions</h4>
+          <form method="post" action="{{'auth/recover' | url}}">
+            <input type="hidden" name="RecoverPasswordForm" value="ok">
+            <div class="input-field">
+              <label for="RecoverEmail">
+                Email
+              </label>
+              <input name="email" id="RecoverEmail" spellcheck="false" autocomplete="off" autocapitalize="off" type="email">
+            </div>
+            <input class="btn-large" type="submit" value="Recover Password">
+            <a href="#" id="HideRecoverPasswordLink">
+              Cancel
+            </a>
+          </form>
+        </div>
+
+      </div>
     </div>
+
   </div>
 </div>
-
 {% endblock %}
 
 {% block script %}
