@@ -1,0 +1,145 @@
+{% extends 'admin.twig' %}
+
+{% set title = 'Users' %}
+
+{% block content %}
+<div>
+  <a href="#ModalUser" id="CreateButton" class="btn waves-effect waves-light modal-trigger" onclick="createUser()">Create user</a>
+</div>
+
+<div id="ModalUser" class="modal modal-fixed-footer">
+  <form id="UserForm" action="{{ 'admin/users/create' | url }}" method="post">
+    <div class="modal-content">
+      <input type="hidden" id="TypeForm" name="CreateUserForm" value="ok">
+      <input type="hidden" id="InputId" name="id" value="">
+      <h4 id="ModalTitle">Create User</h4>
+      <div class="row">
+        <div class="col s12">
+          <div class="input-field col s12 l6">
+            <input type="text" id="InputUsername" name="u" required="required" class="validate">
+            <label for="InputUsername">Username</label>
+          </div>
+          <div class="input-field col s12 l6">
+            <select id="InputRole" name="r"  required="required">
+              <option value="" disabled="disabled" selected="selected">Choose a role</option>
+              {% for group in groups %}
+              <option value="{{ group.id }}">{{ group.role | capitalize }}</option>  
+              {% endfor %}
+            </select>
+            <label>Role</label>
+          </div>
+          <div class="input-field col s12">
+            <input type="email" id="InputEmail" name="e" required="required" class="validate">
+            <label for="InputEmail" data-error="wrong" data-success="right">Email</label>
+          </div>
+          <div id="PasswordInputs">
+            <div class="input-field col s12 l6">
+              <input type="password" id="InputPassword" name="p" class="validate">
+              <label for="InputEmail" data-error="wrong" data-success="right">Password</label>
+            </div>
+            <div class="input-field col s12 l6">
+              <input type="password" id="InputConfirmPassword" name="cp" class="validate">
+              <label for="InputConfirmPassword" data-error="wrong" data-success="right">Confirm Password</label>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      {% if errors %}
+        {% include 'partials/errors.twig' %}
+      {% endif %}
+    </div>
+    <div class="modal-footer">
+      <button id="ResetFormButton" type="reset" class="modal-close waves-effect waves-green btn-flat">Cancel</button>
+      <button id="SubmitFormButton" type="submit" class="waves-effect waves-green btn">Create</button>
+    </div>
+  </form>
+</div>
+
+<table class="striped highlight responsive-table">
+  <thead>
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Email</th>
+        <th></th>
+        <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.user_id }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.role | capitalize}}</td>
+      <td>{{ user.email }}</td>
+      <td>
+        <a href="#ModalUser" class="modal-trigger" onclick="updateUser({{ user.user_id }}, '{{ user.username }}', {{user.group_id}}, '{{user.email}}')">
+          <i class="material-icons black-text">edit</i>
+        </a>
+      </td>
+      <td>
+        <form action="{{ 'admin/users/delete/' | url }}" method="post">
+          <input type="hidden" name="id" value="{{ user.user_id }}">
+          <button class="btn-flat" type="submit">
+            <i class="material-icons black-text">delete</i>
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+  function updateUser (i, u, g, e) {
+    $form = document.getElementById('UserForm')
+    $form.setAttribute("action", '{{ 'admin/users/update' | url }}')
+    document.getElementById('TypeForm').name = 'UpdateUserForm'
+    $form.id.value = i
+    $form.u.value = u
+    $form.r.value = g
+    $form.e.value = e
+    $a = $form.r.querySelector(`option[value="${g}"]`)
+    triggerEventNative($a, 'change')
+    triggerEventNative($form.u, 'change')
+    triggerEventNative($form.e, 'change')
+    document.getElementById('PasswordInputs').classList.add('hide')
+    document.getElementById('ModalTitle').textContent = 'Update User '+i
+    document.getElementById('SubmitFormButton').textContent = 'Update'
+  }
+
+  function createUser () {
+    $form = document.getElementById('UserForm')
+    $form.setAttribute("action", '{{ 'admin/users/create' | url }}')
+    document.getElementById('TypeForm').name = 'CreateUserForm'
+    $form.id.value = ''
+    $form.u.value = ''
+    $form.r.value = ''
+    $form.e.value = ''
+    $a = $form.r.querySelector(`option[value=""]`)
+    triggerEventNative($a, 'change')
+    document.getElementById('PasswordInputs').classList.remove('hide')
+    document.getElementById('ModalTitle').textContent = 'Create User '
+    document.getElementById('SubmitFormButton').textContent = 'Create'
+  }
+</script>
+<!-- // TODO implementar los avisos (error y success) con toast de Materialize -->
+{% if errors %}
+<script type='text/javascript'>
+  var $el = document.getElementById('ModalUser')
+  var instance = M.Modal.getInstance($el)
+  instance.open()
+</script>
+{% endif %}
+
+{% if message %}
+<script type='text/javascript'>
+
+</script>
+{% endif %}
+{% endblock %}

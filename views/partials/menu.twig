@@ -1,0 +1,44 @@
+<nav>
+  <div class="container nav-wrapper">
+    <a href="{{'' | url}}" class="brand-logo">Clothes</a>
+    <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+    {% if user %}
+      {% if 'root' in user.memberships %}
+      <li>
+        <a href="{{'admin' | url}}">Admin</a>
+      </li>
+      {% endif %}
+      <li>
+        <a href="{{'auth/logout' | url}}">Logout</a>
+      </li>
+    {% else %}
+      <li>
+        <a href="{{'auth/login' | url}}">Login</a>
+      </li>
+      <li>
+        <a href="{{'auth/signup' | url}}">Sign up</a>
+      </li>
+    {% endif %}
+    </ul>
+  </div>
+</nav>
+<ul class="sidenav" id="mobile-menu">
+  {% if user %}
+    {% if 'root' in user.memberships %}
+    <li>
+      <a href="{{'admin' | url}}">Admin</a>
+    </li>
+    {% endif %}
+    <li>
+      <a href="{{'auth/logout' | url}}">Logout</a>
+    </li>
+  {% else %}
+    <li>
+      <a href="{{'auth/login' | url}}">Login</a>
+    </li>
+    <li>
+      <a href="{{'auth/signup' | url}}">Sign up</a>
+    </li>
+  {% endif %}
+</ul>

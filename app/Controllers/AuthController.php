@@ -1,10 +1,10 @@
 <?php
 namespace App\Controllers;
 
-use App\Template;
 use App\Modules\Log;
 use App\Modules\Mailer;
 use App\Models\AuthUser;
+use App\Modules\Template;
 use App\Models\AuthMembership;
 use Sirius\Validation\Validator;
 use Illuminate\Database\QueryException;
@@ -30,8 +30,9 @@ class AuthController extends Template {
         if (password_verify($_POST['password'], $user->password)) {
           // OK
           $memberships = [];
-          foreach (AuthMembership::where('user_id', $user->id)->cursor() as $membership) {
-            $memberships[] = $membership->group_id;
+          foreach (AuthMembership::join('auth_group', 'auth_membership.group_id', '=', 'auth_group.id')
+                                  ->where('user_id', $user->id)->cursor() as $membership) {
+            $memberships[] = $membership->role;
           }
 
           $_SESSION['user'] = [
@@ -116,10 +117,15 @@ class AuthController extends Template {
                 ->first();
     if ($user) {
       try {
-        AuthUser::where('id', $user->id)
-            ->update([
-              'registration_key' => ''
-            ]);
+        Capsule::beginTransaction();
+        AuthUser::where('id', $user->id)->update([
+          'registration_key' => null
+        ]);
+        // create a customer by default
+        AuthMembership::create([
+          'user_id' => $user->id
+        ]);
+        Capsule::commit();
         return $this->render('auth/confirm.twig');
       }
       catch(QueryException $e) {

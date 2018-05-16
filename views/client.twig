@@ -1,0 +1,10 @@
+{% extends 'layout.twig' %}
+
+{% block layout %}
+{% include 'partials/menu.twig' %}
+
+<div class="section container">
+  {{ block('content') }}
+</div>
+
+{% endblock %}

@@ -1,5 +1,7 @@
-{% extends 'layout.twig' %}
+{% extends 'client.twig' %}
+
 {% block content %}
+  
   {% if user %}
     {{user.username}}
   {% endif %}

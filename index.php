@@ -41,8 +41,31 @@ use Phroute\Phroute\RouteCollector;
 
 $router = new RouteCollector();
 
+$router->filter('auth', function() {
+	if (!isset($_SESSION['user'])) {
+		header('Location: '.BASE_URL.'auth/login');
+		return false;
+	}
+});
+
+$router->filter('require_membership_root', function() {
+	if (array_search('root', $_SESSION['user']['memberships']) === false) {
+		header('Location: '.BASE_URL);
+		return false;
+	}
+});
+
 $router->controller('/', \App\Controllers\MainController::class);
 $router->controller('/auth', \App\Controllers\AuthController::class);
+
+$router->group(['before' => 'auth'], function($router) {
+	$router->group(['before' => 'require_membership_root'], function($router) {
+		$router->controller('/admin', \App\Controllers\Admin\IndexController::class);
+		$router->controller('/admin/users', \App\Controllers\Admin\UsersController::class);
+		
+	});
+});
+
 
 $dispatcher = new Phroute\Phroute\Dispatcher($router->getData());
 

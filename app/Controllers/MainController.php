@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers;
 
-use App\Template;
+use App\Modules\Template;
 
 class MainController extends Template {
   

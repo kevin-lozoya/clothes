@@ -3,4 +3,11 @@ function toggleRecoverPasswordForm() {
   document.querySelector('#RecoverPasswordForm').classList.toggle('hide')
 }
 
+function triggerEventNative (el, eventName) {
+  var event = document.createEvent('HTMLEvents');
+  event.initEvent(eventName, true, false);
+  el.dispatchEvent(event);
+}
+
+
 M.AutoInit();
