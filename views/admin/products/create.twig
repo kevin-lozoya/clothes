@@ -1,0 +1,89 @@
+{% extends 'admin.twig' %}
+
+{% set title = 'Products' %}
+
+{% block content %}
+
+<div class="my-3">
+  <a href="{{ 'admin/products' | url }}" class="btn waves-effect waves-light">
+    Back
+  </a>
+</div>
+
+<h4>Create Product</h4>
+
+<form id="CreateProductForm" action="{{ 'admin/products/create' | url }}" method="post">
+  <input type="hidden" name="CreateProductForm" value="ok">
+  <div class="row">
+    <div class="col s12">
+      <div class="input-field col s12 l6">
+        <input type="text" id="InputName" name="n" required="required" class="validate">
+        <label for="InputName">Name</label>
+      </div>
+
+      <div class="input-field col s12 l6">
+        <select id="InputBrand" name="b" required="required">
+          <option value="" disabled="disabled" selected="selected">Choose a Brand</option>
+          {% for brand in brands %}
+          <option value="{{ brand.id }}">{{ brand.description }}</option>
+          {% endfor %}
+        </select>
+        <label>Brand</label>
+      </div>
+
+      <div class="input-field col s12 l6">
+        <select id="InputCategory" name="c" required="required">
+          <option value="" disabled="disabled" selected="selected">Choose a Category</option>
+          {% for category in categories %}
+          <option value="{{ category.id }}">{{ category.description }}</option>
+          {% endfor %}
+        </select>
+        <label>Category</label>
+      </div>
+
+      <div class="input-field col s12 l6">
+        <select id="InputSubcategory" name="sc" required="required">
+          <option value="" disabled="disabled" selected="selected">Choose a Subcategory</option>
+        </select>
+        <label>Subcategory</label>
+      </div>
+
+      <div class="input-field col s12 l6">
+        <select id="InputStyle" name="s" required="required">
+          <option value="" disabled="disabled" selected="selected">Choose a Style</option>
+          {% for style in styles %}
+          <option value="{{ style.id }}">{{ style.description }}</option>
+          {% endfor %}
+        </select>
+        <label>Style</label>
+      </div>
+
+      <div class="input-field col s12 l6">
+        <select id="InputColor" name="cl" required="required" class="validate">
+          <option value="" disabled="disabled" selected="selected">Choose a Color</option>
+          {% for color in colors %}
+          <option value="{{ color.id }}">{{ color.description }}</option>
+          {% endfor %}
+        </select>
+        <label>Color</label>
+      </div>
+
+      <div class="input-field col s12">
+        <input type="text" id="InputImage" name="i" required="required" class="validate">
+        <label for="InputImage">Image</label>
+      </div>
+
+    </div>
+  </div>
+  {% if errors %}
+    {% include 'partials/errors.twig' %}
+  {% endif %}
+  <button id="SubmitFormButton" type="submit" class="waves-effect waves-light btn">Create</button>
+</form>
+
+{% endblock %}
+
+{% block script %}
+{% include 'admin/products/script.twig' %}
+{% include 'partials/toastSuccess.twig' %}
+{% endblock %}

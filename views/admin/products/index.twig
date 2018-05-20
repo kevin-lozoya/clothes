@@ -1,0 +1,54 @@
+{% extends 'admin.twig' %}
+
+{% set title = 'Products' %}
+
+{% block content %}
+
+<div class="my-3">
+  <a href="{{ 'admin/products/create' | url }}" class="btn waves-effect waves-light">
+    Create product
+  </a>
+</div>
+
+<table class="striped highlight responsive-table small-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Brand</th>
+      <th>Category</th>
+      <th>Subcategory</th>
+      <th>Style</th>
+      <th>Color</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td>{{ product.name }}</td>
+      <td>{{ product.brand_desc }}</td>
+      <td>{{ product.category_desc }}</td>
+      <td>{{ product.subcategory_desc }}</td>
+      <td>{{ product.style_desc }}</td>
+      <td>{{ product.color_desc }}</td>
+      <td>
+        <a href="{{ 'admin/products/update/' | url }}{{ product.id }}" class="modal-trigger btn-small btn-flat" onclick="updateUser({{ user.user_id }}, '{{ user.username }}', {{user.group_id}}, '{{user.email}}')">
+          <i class="material-icons black-text">edit</i>
+        </a>
+      </td>
+      <td>
+        <form action="{{ 'admin/products/delete/' | url }}" method="post" onsubmit="confirmDeleteSubmit(this,event)">
+          <input type="hidden" name="id" value="{{ product.id }}">
+          <button class="btn-small btn-flat" type="submit">
+            <i class="material-icons black-text">delete</i>
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

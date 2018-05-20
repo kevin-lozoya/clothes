@@ -3,7 +3,8 @@
 {% set title = 'Users' %}
 
 {% block content %}
-<div>
+
+<div class="my-3">
   <a href="#ModalUser" id="CreateButton" class="btn waves-effect waves-light modal-trigger" onclick="createUser()">Create user</a>
 </div>
 
@@ -56,7 +57,7 @@
   </form>
 </div>
 
-<table class="striped highlight responsive-table">
+<table class="striped highlight responsive-table small-table">
   <thead>
     <tr>
         <th>Id</th>
@@ -76,14 +77,14 @@
       <td>{{ user.role | capitalize}}</td>
       <td>{{ user.email }}</td>
       <td>
-        <a href="#ModalUser" class="modal-trigger" onclick="updateUser({{ user.user_id }}, '{{ user.username }}', {{user.group_id}}, '{{user.email}}')">
+        <a href="#ModalUser" class="modal-trigger btn-small btn-flat" onclick="updateUser({{ user.user_id }}, '{{ user.username }}', {{user.group_id}}, '{{user.email}}')">
           <i class="material-icons black-text">edit</i>
         </a>
       </td>
       <td>
-        <form action="{{ 'admin/users/delete/' | url }}" method="post">
+        <form action="{{ 'admin/users/delete/' | url }}" method="post" onsubmit="confirmDeleteSubmit(this,event)">
           <input type="hidden" name="id" value="{{ user.user_id }}">
-          <button class="btn-flat" type="submit">
+          <button class="btn-small btn-flat" type="submit">
             <i class="material-icons black-text">delete</i>
           </button>
         </form>
@@ -128,6 +129,7 @@
     document.getElementById('SubmitFormButton').textContent = 'Create'
   }
 </script>
+
 <!-- // TODO implementar los avisos (error y success) con toast de Materialize -->
 {% if errors %}
 <script type='text/javascript'>
@@ -137,9 +139,6 @@
 </script>
 {% endif %}
 
-{% if message %}
-<script type='text/javascript'>
+{% include 'partials/toastSuccess.twig' %}
 
-</script>
-{% endif %}
 {% endblock %}

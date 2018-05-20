@@ -67,7 +67,6 @@ class UsersController extends Template {
     }
 
     $_SESSION['errors'] = $validator->getMessages();
-    var_dump($_SESSION['errors']);
 
     header('Location: '.BASE_URL.'admin/users');
 

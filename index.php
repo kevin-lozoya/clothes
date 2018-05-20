@@ -62,7 +62,7 @@ $router->group(['before' => 'auth'], function($router) {
 	$router->group(['before' => 'require_membership_root'], function($router) {
 		$router->controller('/admin', \App\Controllers\Admin\IndexController::class);
 		$router->controller('/admin/users', \App\Controllers\Admin\UsersController::class);
-		
+		$router->controller('/admin/products', \App\Controllers\Admin\ProductsController::class);
 	});
 });
 

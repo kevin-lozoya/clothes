@@ -13,13 +13,13 @@
               <label for="CustomerEmail" class="">
                 Email
               </label>
-              <input name="email" id="CustomerEmail" class="" spellcheck="false" autocomplete="off" autocapitalize="off" autofocus="" type="email">
+              <input type="email" name="email" id="CustomerEmail" class="validate" required spellcheck="false" autocapitalize="off" autofocus="">
             </div>
             <div class="input-field">
               <label for="CustomerPassword">
                 Password
               </label>
-              <input name="password" id="CustomerPassword" class="" type="password">
+              <input type="password" name="password" id="CustomerPassword" class="validate" required>
             </div>
             {% if errors %}
               {% include 'partials/errors.twig' %}
@@ -38,7 +38,7 @@
               <label for="RecoverEmail">
                 Email
               </label>
-              <input name="email" id="RecoverEmail" spellcheck="false" autocomplete="off" autocapitalize="off" type="email">
+              <input type="email" name="email" id="RecoverEmail" class="validate" required spellcheck="false" autocapitalize="off">
             </div>
             <input class="btn-large" type="submit" value="Recover Password">
             <a href="#" id="HideRecoverPasswordLink">
