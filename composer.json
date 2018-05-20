@@ -1,6 +1,6 @@
 {
-  "name": "kalozoya/clothes",
-  "type": "web application",
+  "name": "kalozoya/virtual-closet",
+  "type": "application",
   "description": "Web application to find clothes",
   "autoload": {
     "psr-4": {
