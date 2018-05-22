@@ -1,8 +1,138 @@
 {% extends 'client.twig' %}
 
 {% block content %}
+<div class="row mb-3">
+  <div class="input-field col s12 m3">
+    <select id="InputBrand">
+      <option value="" selected>All</option>
+      {% for brand in brands %}
+      <option value="{{ brand.id }}">{{ brand.description }}</option>
+      {% endfor %}
+    </select>
+    <label>Brand</label>
+  </div>
   
-  {% if user %}
-    {{user.username}}
-  {% endif %}
+  <div class="input-field col s12 m3">
+    <select id="InputCategory">
+      <option value="" selected>All</option>
+      {% for category in categories %}
+      <option value="{{ category.id }}">{{ category.description }}</option>
+      {% endfor %}
+    </select>
+    <label>Category</label>
+  </div>
+
+  <div class="input-field col s12 m3">
+    <select id="InputSubcategory">
+      <option value="" selected>All</option>
+    </select>
+    <label>Subcategory</label>
+  </div>
+  
+  <div class="input-field col s12 m3">
+    <select id="InputStyle">
+      <option value="" selected>All</option>
+      {% for style in styles %}
+      <option value="{{ style.id }}">{{ style.description }}</option>
+      {% endfor %}
+    </select>
+    <label>Style</label>
+  </div>
+  
+  <div class="input-field col s12 m3">
+    <select id="InputColor">
+      <option value="" selected>All</option>
+      {% for color in colors %}
+      <option value="{{ color.id }}">{{ color.description }}</option>
+      {% endfor %}
+    </select>
+    <label>Color</label>
+  </div>
+</div>
+
+<div id="Products" class="row-bootstrap"></div>
+
+
+{% endblock %}
+
+{% block script %}
+{% autoescape false %}
+<script type='text/javascript'>
+  const products = {{ products }}
+  const subcategories = {{ subcategories }}
+  const $inputBrand = document.getElementById('InputBrand')
+  const $inputCategory = document.getElementById('InputCategory')
+  const $inputSubcategory = document.getElementById('InputSubcategory')
+  const $inputStyle = document.getElementById('InputStyle')
+  const $inputColor = document.getElementById('InputColor')
+  const $divProducts = document.getElementById('Products')
+
+  function seeFilteredProducts() {
+    const valueBrand = $inputBrand.value
+    const valueCategory = $inputCategory.value
+    const valueSubcategory = $inputSubcategory.value
+    const valueStyle = $inputStyle.value
+    const valueColor = $inputColor.value
+
+    let filterProducts = products.filter((el) => {
+      if (valueBrand != '') { if (valueBrand == el.brand_id) { return el } } else return el
+    })
+    filterProducts = filterProducts.filter((el) => {
+      if (valueCategory != '') { if (valueCategory == el.category_id) { return el } } else return el
+    })
+    filterProducts = filterProducts.filter((el) => {
+      if (valueSubcategory != '') { if (valueSubcategory == el.subcategory_id) { return el } } else return el
+    })
+    filterProducts = filterProducts.filter((el) => {
+      if (valueStyle != '') { if (valueStyle == el.style_id) { return el } } else return el
+    })
+    filterProducts = filterProducts.filter((el) => {
+      if (valueColor != '') { if (valueColor == el.color_id) { return el } } else return el
+    })
+
+    let html = ''
+
+    for (const el of filterProducts) {
+      // TODO permitir agrandar la imagen en plan modal
+      html += `
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="card">
+            <div class="card-image">
+              <img src="${el.image}">
+              <a class="btn-floating halfway-fab waves-effect waves-light red">
+                <i class="material-icons">add</i>
+              </a>
+            </div>
+            <div class="card-content">
+              <p class="text-truncate">${el.name}</p>
+            </div>
+          </div>
+        </div>`
+    }
+    
+    $divProducts.innerHTML = html
+  }
+
+  $inputBrand.addEventListener('change', seeFilteredProducts)
+  $inputSubcategory.addEventListener('change', seeFilteredProducts)
+  $inputStyle.addEventListener('change', seeFilteredProducts)
+  $inputColor.addEventListener('change', seeFilteredProducts)
+  $inputCategory.addEventListener('change', function () {
+    const idCategory = this.value
+    let subcategories_category = subcategories.filter(function (el) {
+      if (el.category_id == idCategory)
+        return el
+    })
+
+    subcategories_category = [{id: '', category_id: 0, description: 'All'}].concat(subcategories_category)
+    
+    updateFormSelect($inputSubcategory, subcategories_category)
+
+    seeFilteredProducts()
+  })
+
+  seeFilteredProducts()
+
+</script>
+{% endautoescape %}
 {% endblock %}
