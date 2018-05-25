@@ -1,7 +1,6 @@
 {% extends 'client.twig' %}
 
 {% block content %}
-{# // TODO En modo Móvil, poner un botón de filtro como en la aplicación Smart Closet y los filtro en un sidebar a la derecha #}
 <div class="row mb-3">
   <div class="input-field col s12 m3">
     <select id="InputBrand">
@@ -100,9 +99,6 @@
           <div class="card">
             <div class="card-image">
               <img src="${el.image}">
-              <a class="btn-floating halfway-fab waves-effect waves-light red" onclick="addProduct(${el.id})">
-                <i class="material-icons">add</i>
-              </a>
             </div>
             <div class="card-content">
               <p class="text-truncate">${el.name}</p>

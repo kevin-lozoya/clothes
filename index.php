@@ -5,14 +5,17 @@ error_reporting(E_ALL);
 
 require_once 'vendor/autoload.php';
 
+$dotenv = new Dotenv\Dotenv(__DIR__ .'/private');
+$dotenv->load();
+
+if (isset($_POST[getenv('NAME_COOKIE_SESSION')])) {
+	session_id($_POST[getenv('NAME_COOKIE_SESSION')]);
+}
 session_start();
 
 $baseDir = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 $baseUrl = 'http://'.$_SERVER['HTTP_HOST'].$baseDir;
 define('BASE_URL', $baseUrl);
-
-$dotenv = new Dotenv\Dotenv(__DIR__ .'/private');
-$dotenv->load();
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -55,7 +58,6 @@ $router->filter('require_membership_root', function() {
 	}
 });
 
-$router->controller('/', \App\Controllers\MainController::class);
 $router->controller('/auth', \App\Controllers\AuthController::class);
 
 $router->group(['before' => 'auth'], function($router) {
@@ -64,6 +66,9 @@ $router->group(['before' => 'auth'], function($router) {
 		$router->controller('/admin/users', \App\Controllers\Admin\UsersController::class);
 		$router->controller('/admin/products', \App\Controllers\Admin\ProductsController::class);
 	});
+	
+	$router->controller('/', \App\Controllers\MainController::class);
+	$router->controller('/user/closet', \App\Controllers\User\ClosetController::class);
 });
 
 
