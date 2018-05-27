@@ -1,5 +1,7 @@
 {% extends 'client.twig' %}
 
+{% set subtitle = 'My closet' %}
+
 {% block content %}
 <div class="row mb-3">
   <div class="input-field col s12 m3">
@@ -95,10 +97,13 @@
     for (const el of filterProducts) {
       // TODO permitir agrandar la imagen en plan modal
       html += `
-        <div class="col-6 col-md-4 col-lg-3">
+        <div id="Product${el.id}" class="col-6 col-md-4 col-lg-3">
           <div class="card">
             <div class="card-image">
               <img src="${el.image}">
+              <a class="btn-floating halfway-fab waves-effect waves-light red" onclick="removeProduct(${el.id})">
+                <i class="material-icons">close</i>
+              </a>
             </div>
             <div class="card-content">
               <p class="text-truncate">${el.name}</p>
@@ -130,28 +135,40 @@
 
   seeFilteredProducts()
   
-  function addProduct (id) {
-    const formdata = new FormData()
-    formdata.append('id', id)
-    formdata.append('PHPSESSID', readCookie('PHPSESSID'))
-
-    fetch("{{ '/addproduct' | url }}", {
-      method: 'post',
-      body: formdata
-    }).then(function(response) {
-      return response.json()
-    }).then(function(data) {
-      if (data.status == 'OK')
-        M.toast({
-          html: 'Product added to the closet.',
-          classes: 'toast-success'
-        })
-      else
-        M.toast({
-          html: 'You already have this product in your closet.',
-          classes: 'toast-error'
-        })
-    });
+  function removeProduct (id) {
+    swal({
+    title: "Are you sure?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      const formdata = new FormData()
+      formdata.append('id', id)
+      formdata.append('PHPSESSID', readCookie('PHPSESSID'))
+      
+      fetch("{{ 'user/closet/remove' | url }}", {
+        method: 'post',
+        body: formdata
+      }).then(function(response) {
+        return response.json()
+      }).then(function(data) {
+        if (data.status == 'OK') {
+          swal("It has been deleted!", {
+            icon: "success",
+          })
+          document.getElementById(`Product${id}`).remove()
+        }
+        else
+          M.toast({
+            html: 'Error',
+            classes: 'toast-error'
+          })
+      })
+    }
+    })
+    
   }
 
 </script>

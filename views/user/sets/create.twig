@@ -1,0 +1,122 @@
+{% extends 'client.twig' %}
+
+{% set subtitle = 'Create Set' %}
+
+{% block content %}
+<ul id="Set" class="sidenav">
+  <li><a href="#!" onclick="saveSet()"><i class="material-icons">save</i>Save set</a></li>
+  <li><div class="divider"></div></li>
+
+</ul>
+
+<div id="Products" class="row-bootstrap"></div>
+
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large red sidenav-trigger" data-target="Set">
+    <i class="large material-icons">remove_red_eye</i>
+  </a>
+</div>
+      
+{% endblock %}
+
+{% block script %}
+{% autoescape false %}
+<script type='text/javascript'>
+  const products = {{ products }}
+  const $divProducts = document.getElementById('Products')
+  let productsSet = []
+
+  let html = ''
+
+  for (const el of products) {
+    html += `
+      <div class="col-6 col-md-4 col-lg-3">
+        <div id="CartProduct${el.id}" class="card">
+          <div class="card-image">
+            <img src="${el.image}">
+            <a class="btn-floating halfway-fab waves-effect waves-light red" onclick="addProductToSet(${el.id})">
+              <i class="material-icons">add</i>
+            </a>
+          </div>
+          <div class="card-content">
+            <p class="text-truncate">${el.name}</p>
+          </div>
+        </div>
+      </div>`
+  }
+  
+  $divProducts.innerHTML = html
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelector('#Set.sidenav');
+    var instances = M.Sidenav.init(elems, {edge: 'right'});
+  })
+
+  function addProductToSet (id) {
+    if (productsSet.indexOf(id) == -1) {
+      $el = document.getElementById(`CartProduct${id}`).cloneNode(true)
+      $el.removeAttribute('id')
+      $el.querySelector('a.btn-floating').onclick = function () {
+        document.getElementById(`ProductSet${id}`).remove()
+        productsSet.splice(productsSet.indexOf(id))
+      }
+      $el.querySelector('i.material-icons').textContent = 'clear'
+      liTag = document.createElement('li')
+      liTag.setAttribute('id', `ProductSet${id}`)
+      liTag.appendChild($el)
+      $set = document.getElementById('Set')
+      $set.appendChild(liTag)
+      productsSet.push(id)
+      M.toast({
+        html: 'Product added to set',
+        classes: 'toast-success'
+      })
+    }
+    else M.toast({
+      html: 'Product already exists in set',
+      classes: 'toast-error'
+    })
+    
+  }
+  
+  function saveSet (id) {
+    if (productsSet.length > 0) {
+      const formdata = new FormData()
+      formdata.append('productsSet', JSON.stringify(productsSet))
+      formdata.append('PHPSESSID', readCookie('PHPSESSID'))
+
+      fetch("{{ 'user/sets/create' | url }}", {
+        method: 'post',
+        body: formdata
+      }).then(function(response) {
+        return response.json()
+      }).then(function(data) {
+        console.log(data);
+        if (data.status == 'OK') {
+          M.toast({
+            html: 'Set create.',
+            classes: 'toast-success'
+          })
+          $productsSet = document.querySelectorAll('#Set li[id^="ProductSet"]')
+          console.log($productsSet)
+          for (const el of $productsSet) {
+            el.remove()
+          }
+          productsSet = []
+        }
+        else
+          M.toast({
+            html: 'Error',
+            classes: 'toast-error'
+          })
+      })
+    }
+    else M.toast({
+      html: 'Not have products.',
+      classes: 'toast-error'
+    })
+  }
+
+</script>
+{% endautoescape %}
+{% endblock %}

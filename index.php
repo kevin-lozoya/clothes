@@ -69,6 +69,7 @@ $router->group(['before' => 'auth'], function($router) {
 	
 	$router->controller('/', \App\Controllers\MainController::class);
 	$router->controller('/user/closet', \App\Controllers\User\ClosetController::class);
+	$router->controller('/user/sets', \App\Controllers\User\SetsController::class);
 });
 
 

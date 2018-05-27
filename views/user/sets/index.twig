@@ -1,0 +1,70 @@
+{% extends 'client.twig' %}
+
+{% set subtitle = 'My Sets' %}
+
+{% block content %}
+<div class="fixed-action-btn">
+  <a href="{{ 'user/sets/create' | url }}" class="btn-floating btn-large red">
+    <i class="large material-icons">add</i>
+  </a>
+</div>
+
+{% for value in productsSets %}
+<div id="Set{{ value.setId }}" class="carousel" style="border: 1px solid black">
+  <a class="btn-floating waves-effect waves-light red" onclick="removeSet({{ value.setId }})">
+    <i class="material-icons">close</i>
+  </a>
+  {% for product in value.products %}
+  <a class="carousel-item" href="#!">
+    <img src="{{ product.image }}">
+  </a>
+  {% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.carousel')
+    var instances = M.Carousel.init(elems, {dist: 0, indicators: true})
+  })
+
+  function removeSet (id) {
+    swal({
+    title: "Are you sure?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      const formdata = new FormData()
+      formdata.append('id', id)
+      formdata.append('PHPSESSID', readCookie('PHPSESSID'))
+      
+      fetch("{{ 'user/sets/remove' | url }}", {
+        method: 'post',
+        body: formdata
+      }).then(function(response) {
+        return response.json()
+      }).then(function(data) {
+        if (data.status == 'OK') {
+          swal("It has been deleted!", {
+            icon: "success",
+          })
+          document.getElementById(`Set${id}`).remove()
+        }
+        else
+          M.toast({
+            html: 'Error',
+            classes: 'toast-error'
+          })
+      })
+    }
+    })
+    
+  }
+</script>
+{% endblock %}

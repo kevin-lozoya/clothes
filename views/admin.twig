@@ -4,8 +4,10 @@
 <nav class="hide-on-large-only">
   <div class="nav-wrapper ">
     <a href="{{ '' | url }}" class="brand-logo left">Closet</a>
+
     <span class="hide-on-med-and-up">
       <span class="brand-logo right">Admin Panel</span>
+      
     </span>
     <span class="hide-on-small-only ">
       <span class="brand-logo">Admin Panel</span>
@@ -14,12 +16,36 @@
 </nav>
 
 <nav class="hide-on-large-only">
-  {% if title %}
+  
   <div class="nav-wrapper red lighten-5">
+    {% if title %}
     <span class="brand-logo black-text">{{ title }}</span>
+    {% endif %}
+    
+    <a href="#" data-target="nav-admin" class="sidenav-trigger">
+      <i class="material-icons black-text">menu</i>
+    </a>
   </div>
-  {% endif %}
+  
 </nav>
+
+<ul id="nav-admin" class="sidenav">
+  <li class="logo">
+    <a id="logo-container" href="{{ '' | url }}" class="brand-logo">
+      <h3 class="header">Closet</h3>
+    </a>
+  </li>
+  <li>
+    <a href="{{ 'admin/users' | url }}" class="waves-effect waves-teal">
+      Users
+    </a>
+  </li>
+  <li>
+    <a href="{{ 'admin/products' | url }}" class="waves-effect waves-teal">
+      Products
+    </a>
+  </li>
+</ul>
 
 <div class="hide-on-med-and-down">
   <div class="top-nav">
@@ -31,7 +57,7 @@
       </div>
     </div>
   </div>
-  <ul id="nav-admin" class="sidenav sidenav-fixed">
+  <ul class="sidenav sidenav-fixed">
     <li class="logo">
       <a id="logo-container" href="{{ '' | url }}" class="brand-logo">
         <h3 class="header">Closet</h3>

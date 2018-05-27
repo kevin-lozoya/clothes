@@ -1,13 +1,10 @@
 <?php
 namespace App\Controllers\User;
 
-use App\Models\Brand;
-use App\Models\Color;
-use App\Models\Style;
 use App\Models\Closet;
-use App\Models\Category;
 use App\Modules\Template;
-use App\Models\Subcategory;
+use Sirius\Validation\Validator;
+use Illuminate\Database\QueryException;
 
 class ClosetController extends Template {
 
@@ -50,6 +47,28 @@ class ClosetController extends Template {
       'styles' => $styles,
       'colors' => $colors,
     ]);
+  }
+
+  public function postRemove() {
+    $status = 'ERROR';
+
+    $validator = new Validator();
+    $validator->add('id', 'required');
+    $validator->add('id', 'integer');
+
+    if ($validator->validate($_POST)) {
+      try {
+        Closet::where([
+          'user_id' => $_SESSION['user']['id'],
+          'product_id' => $_POST['id']
+        ])->delete();
+        $status = 'OK';
+      } catch (QueryException $e) {
+        Log::logError($e->getMessage());
+      }
+    }
+
+    echo json_encode(['status' => $status]);
   }
   
 }
